@@ -1,14 +1,12 @@
 # SLM Workflow Platform
 
-> ** Production-grade AI workflow orchestration — where Small Language Models do the routing and Large Language Models do the reasoning.**
+> **Production-grade AI workflow orchestration — where Small Language Models do the routing and Large Language Models do the reasoning.**
 
   Most AI systems treat every request the same: send it to the biggest, most expensive model available and wait. This platform takes a        
-  different approach.                                                                                                                        
-   
+  different approach.                                                                                                                    
   A lightweight Small Language Model — running locally in under 300 ms — reads each incoming request, classifies its intent, scores its       
   complexity, and decides which pipeline to run. Simple, well-defined tasks never leave the local machine. Only genuinely complex work —
-  analysis, generation, multi-step reasoning — gets escalated to a Large Language Model like Claude or GPT-4o.                                
-                                                            
+  analysis, generation, multi-step reasoning — gets escalated to a Large Language Model like Claude or GPT-4o.                                                                               
   The result is a system that is fast where speed matters, powerful where power is needed, and cost-efficient by default. A code review that  
   used to hit a $0.005/1k-token LLM now resolves through a free local model at 350 ms. A nuanced architecture analysis that needs deep
   reasoning still gets Claude Sonnet — but only when nothing smaller could do the job.                                                        
