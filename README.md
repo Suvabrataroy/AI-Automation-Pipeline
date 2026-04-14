@@ -1,4 +1,4 @@
-# AI-Automation-Pipepline (SLM Workflow Platform)
+# AI-Automation-Pipeline (SLM Workflow Platform)
 
 > **Production-grade AI workflow orchestration — where Small Language Models do the routing and Large Language Models do the reasoning.**
 
