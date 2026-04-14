@@ -1,0 +1,65 @@
+# ============================================================
+# SLM Model Stack — Pre-configured Ollama + model pulls
+# ============================================================
+# Starts Ollama server and pre-loads all SLM models used by
+# the platform. Each model is pulled on first run and cached
+# in the ollama-data volume.
+#
+# Usage:
+#   docker compose -f docker/slm-models/docker-compose.yml up -d
+#
+# Models pulled:
+#   phi3:mini         — primary routing SLM (~2.3 GB)
+#   gemma2:2b         — guardrail SLM (~1.6 GB)
+#   qwen2.5-coder:3b  — coding SLM (~1.9 GB)
+#   smollm2:360m      — pre-filter SLM (~220 MB)
+# ============================================================
+
+version: "3.9"
+
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h       # keep models loaded in VRAM
+      - OLLAMA_NUM_PARALLEL=4       # serve up to 4 concurrent requests
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]   # remove this block if CPU-only
+
+  # ---- Model bootstrap service ----
+  # Runs once to pull all required models, then exits.
+  ollama-bootstrap:
+    image: ollama/ollama:latest
+    container_name: ollama-bootstrap
+    depends_on:
+      ollama:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "/bootstrap.sh"]
+    volumes:
+      - ./bootstrap.sh:/bootstrap.sh:ro
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    restart: "no"
+
+volumes:
+  ollama-data:
+    driver: local

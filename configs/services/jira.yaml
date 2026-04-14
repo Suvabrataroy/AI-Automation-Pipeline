@@ -1,0 +1,34 @@
+name: jira
+version: "1.0"
+description: "Jira operations — ticket creation, status updates, sprint management."
+purpose: ticket_ops
+
+capabilities:
+  - create_ticket
+  - update_ticket
+  - search_tickets
+  - link_tickets
+
+slm:
+  model_tier: slm
+  intent_keywords:
+    - ticket
+    - issue
+    - jira
+    - bug
+    - task
+    - sprint
+  typical_complexity: low
+
+transport:
+  type: mcp
+  mcp_server: jira
+
+docker:
+  image: "ghcr.io/atlassian/jira-mcp-server:latest"
+  port: 8081
+  env:
+    JIRA_TOKEN: "{{ secret:jira/oauth_token }}"
+    JIRA_BASE_URL: "{{ secret:jira/base_url }}"
+
+enabled: true

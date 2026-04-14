@@ -1,0 +1,68 @@
+tiers:
+  slm:
+    primary:
+      provider: local
+      model: phi3:mini
+      max_tokens: 256
+      timeout_ms: 300
+    fallback:
+      provider: anthropic
+      model: claude-haiku-4-5
+
+  slm_guardrail:
+    primary:
+      provider: local
+      model: gemma2:2b
+      timeout_ms: 400
+    fallback:
+      provider: groq
+      model: llama-3.1-8b-instant
+
+  slm_coding:
+    primary:
+      provider: local
+      model: qwen2.5-coder:3b
+      timeout_ms: 350
+    fallback:
+      provider: together
+      model: Qwen/Qwen2.5-7B-Instruct-Turbo
+
+  llm:
+    primary:
+      provider: anthropic
+      model: claude-sonnet-4-6
+    fallback:
+      provider: openai
+      model: gpt-4o
+
+providers:
+  anthropic:
+    api_key: "{{ secret:anthropic/api_key }}"
+  openai:
+    api_key: "{{ secret:openai/api_key }}"
+  groq:
+    api_key: "{{ secret:groq/api_key }}"
+  together:
+    api_key: "{{ secret:together/api_key }}"
+  local:
+    base_url: http://localhost:11434   # Ollama
+    format: json                        # constrained decoding — forces valid JSON output
+
+cost_per_1k_tokens:
+  claude-sonnet-4-6: 0.003
+  claude-haiku-4-5: 0.00025
+  gpt-4o: 0.005
+  phi3:mini: 0.0
+  gemma2:2b: 0.0
+  qwen2.5-coder:3b: 0.0
+  llama-3.1-8b-instant: 0.0001
+  Qwen/Qwen2.5-7B-Instruct-Turbo: 0.0002
+
+# SmolLM2 pre-filter — optional, runs before SLM routing to drop obviously
+# empty/malformed/out-of-domain requests at <10ms. Set enabled: false to skip.
+pre_filter:
+  enabled: true
+  provider: local
+  model: smollm2:360m
+  timeout_ms: 10
+  max_tokens: 8

@@ -1,0 +1,60 @@
+# ============================================================
+# SERVICE REGISTRATION TEMPLATE
+# ============================================================
+# Copy this file, rename it to <your-service-name>.yaml,
+# fill in your values, and drop it in configs/services/.
+# The platform auto-discovers and registers it on next startup
+# (or POST /registry/reload for live hot-reload).
+#
+# Files starting with '_' are ignored by the loader.
+# ============================================================
+
+name: my-service                    # REQUIRED — unique identifier
+version: "1.0"                      # optional
+description: "One sentence describing what this service does."
+
+# Domain category — helps the SLM brain match this service to intents.
+# Examples: code_review, ticket_ops, notification, payment, data_ops
+purpose: my_domain
+
+# Capabilities this service exposes. Keep to ≤6 items.
+# These become part of the compact token summary the SLM sees.
+capabilities:
+  - capability_one
+  - capability_two
+  - capability_three
+
+# SLM routing config — tells the brain when and how to route here
+slm:
+  model_tier: slm              # slm | slm_guardrail | slm_coding | llm
+  intent_keywords:             # ≤6 short keywords the SLM matches on
+    - keyword_one
+    - keyword_two
+  typical_complexity: low      # low | medium | high
+
+# Transport — how the orchestrator calls this service
+transport:
+  type: rest                   # rest | grpc | mcp
+
+  # For type: rest
+  url: "http://my-service:8080"
+
+  # For type: mcp (comment out url above, uncomment below)
+  # mcp_server: my-mcp-server  # must match name in mcp_servers.yaml
+
+  # For type: grpc (comment out url above, uncomment below)
+  # grpc_address: "my-service:50051"
+
+# Docker config — for self-hosted deployment
+# The platform generates docker-compose entries from this block.
+docker:
+  image: "my-org/my-service:latest"
+  port: 8080
+  env:
+    MY_SECRET_TOKEN: "{{ secret:myservice/token }}"
+    # Add more env vars here
+  # volumes:
+  #   - ./data:/app/data
+
+# Set to false to soft-disable without deleting the file
+enabled: true

@@ -1,0 +1,32 @@
+name: slack
+version: "1.0"
+description: "Slack messaging — send notifications, post to channels, create threads."
+purpose: notification
+
+capabilities:
+  - send_message
+  - post_channel
+  - create_thread
+  - search_messages
+
+slm:
+  model_tier: slm
+  intent_keywords:
+    - notify
+    - slack
+    - message
+    - alert
+    - channel
+  typical_complexity: low
+
+transport:
+  type: mcp
+  mcp_server: slack
+
+docker:
+  image: "ghcr.io/slackapi/slack-mcp-server:latest"
+  port: 8082
+  env:
+    SLACK_BOT_TOKEN: "{{ secret:slack/bot_token }}"
+
+enabled: true

@@ -1,0 +1,33 @@
+name: github
+version: "1.0"
+description: "GitHub operations — PR review, issue management, code search."
+purpose: code_ops
+
+capabilities:
+  - code_review
+  - pr_ops
+  - issue_ops
+  - code_search
+
+slm:
+  model_tier: slm_coding
+  intent_keywords:
+    - code_review
+    - pull_request
+    - pr
+    - github
+    - diff
+    - repository
+  typical_complexity: low
+
+transport:
+  type: mcp
+  mcp_server: github
+
+docker:
+  image: "ghcr.io/github/github-mcp-server:latest"
+  port: 8080
+  env:
+    GITHUB_TOKEN: "{{ secret:github/token }}"
+
+enabled: true
